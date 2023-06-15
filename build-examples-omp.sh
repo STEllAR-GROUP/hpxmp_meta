@@ -17,7 +17,7 @@ PROJECT=examples
 
 mkdir -p ${PREFIX}
 
-rm -rf ${EXAMPLE_PATH}/cmake-build
+rm -rf ${EXAMPLE_PATH}/cmake-build-omp
 
 cmake                                                                                     \
   -DCMAKE_BUILD_TYPE=${BUILD_TYPE}                                                        \
