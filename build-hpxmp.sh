@@ -28,6 +28,8 @@ if [ ! -d ${LLVM_DIR} ]; then
   git clone --depth=1 -b hpxc git@github.com:light2802/llvm-project.git ${LLVM_DIR}
 fi
 
+rm -rf ${BUILD_DIR}
+
 cmake                                \
   -DCMAKE_BUILD_TYPE=${BUILD_TYPE}   \
   -DCMAKE_VERBOSE_MAKEFILE=ON        \
