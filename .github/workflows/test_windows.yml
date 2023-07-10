@@ -1,8 +1,8 @@
-# Copyright (c) 2023 Aarya Chaumal
+# Copyright c 2023 Aarya Chaumal
 #
 # SPDX-License-Identifier: BSL-1.0
-# Distributed under the Boost Software License, Version 1.0. (See accompanying
-# file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+# Distributed under the Boost Software License, Version 1.0. See accompanying
+# file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt
 
 name: Test examples on Windows
 
@@ -15,41 +15,58 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-    container: stellargroup/build_env:latest
 
     steps:
       - uses: actions/checkout@v3
+      - uses: jwlawson/actions-setup-cmake@v1.14
+        with:
+          cmake-version: "3.22.x"
+      - name: Install dependencies
+        run: |
+          md C:\projects
+          $client = new-object System.Net.WebClient
+          $client.DownloadFile("https://rostam.cct.lsu.edu/download/builder/vcpkg-export-hpx-dependencies-2022.7z","C:\projects\vcpkg-export-hpx-dependencies.7z")
+          7z x C:\projects\vcpkg-export-hpx-dependencies.7z -y -oC:\projects\vcpkg
+          perl -MCPAN -e shell
+
+      - name: install cpanm and multiple modules
+        uses: perl-actions/install-with-cpanm@stable
+        with:
+          install: |
+            Pod::Usage
+
       - name: Install HPX
+        shell: bash
         run: |
           PREFIX="${CURRENT_DIR:=$(pwd)}"
-            
+
           BUILD_TYPE=Release
-          HPX_DIR=${PREFIX}/hpx/  
-          mkdir -p ${PREFIX}
+          HPX_DIR=${PREFIX}/hpx/
+          rm -rf ${HPX_DIR}  
+          #mkdir -p ${PREFIX}
 
           git clone https://github.com/STEllAR-GROUP/hpx.git ${HPX_DIR}
-            
+
           cd ${HPX_DIR}
           cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE}         \
-          -DCMAKE_CXX_FLAGS="-std=c++17"                 \
+          -DCMAKE_TOOLCHAIN_FILE="C:/projects/vcpkg/scripts/buildsystems/vcpkg.cmake" \
           -DHPX_WITH_THREAD_IDLE_RATES=ON                \
-          -DHPX_WITH_MALLOC=tcmalloc                     \
           -DHPX_WITH_EXAMPLES=OFF                        \
-          -DHPX_WITH_APEX=ON                             \
           -DHPX_WITH_FETCH_ASIO=ON                       \
           -DHPX_WITH_DYNAMIC_HPX_MAIN=OFF                \
-          -Wdev -S ${HPX_DIR} -B ${HPX_DIR}/cmake-build/${BUILD_TYPE}
-            
-          cmake --build ${HPX_DIR}/cmake-build/${BUILD_TYPE}/ --parallel 
-          cmake --install ${HPX_DIR}/cmake-build/${BUILD_TYPE}/ --prefix ${HPX_DIR}/cmake-install/${BUILD_TYPE}
+          -Wdev -S ${HPX_DIR} -B ${HPX_DIR}/cmake-build/${BUILD_TYPE} \
+          -G'Visual Studio 17 2022'
+
+          cmake --build ${HPX_DIR}/cmake-build/${BUILD_TYPE}/ --parallel
 
       - name: Install HPXC
+        shell: bash
         run: |
           PREFIX="${CURRENT_DIR:=$(pwd)}"
 
           BUILD_TYPE=Release
           HPXC_DIR=${PREFIX}/hpxc
-          HPX_DIR=${PREFIX}/hpx/cmake-install/${BUILD_TYPE}/lib/cmake/HPX
+          HPX_DIR=${PREFIX}/hpx/cmake-build/${BUILD_TYPE}/lib/cmake/HPX
 
           mkdir -p ${PREFIX}
 
@@ -57,16 +74,16 @@ jobs:
 
           cmake                                                         \
           -DCMAKE_BUILD_TYPE=${BUILD_TYPE}                              \
+          -DCMAKE_TOOLCHAIN_FILE="C:/projects/vcpkg/scripts/buildsystems/vcpkg.cmake" \
           -DHPX_DIR=${HPX_DIR}                                          \
-          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON                            \
-          -DCMAKE_CXX_FLAGS="-std=c++17"                                \
           -Wdev -S ${HPXC_DIR} -B ${HPXC_DIR}/cmake-build/${BUILD_TYPE} \
           -DCMAKE_POSITION_INDEPENDENT_CODE=ON
 
           cmake --build ${HPXC_DIR}/cmake-build/${BUILD_TYPE}/ --parallel 
-          cmake --install ${HPXC_DIR}/cmake-build/${BUILD_TYPE}/ --prefix ${HPXC_DIR}/cmake-install/${BUILD_TYPE}
+          #cmake --install ${HPXC_DIR}/cmake-build/${BUILD_TYPE}/ --prefix ${HPXC_DIR}/cmake-install/${BUILD_TYPE}
 
       - name: Build hpxmp
+        shell: bash
         run: |
           PREFIX="${CURRENT_DIR:=$(pwd)}"
 
@@ -74,31 +91,32 @@ jobs:
           LLVM_DIR=${PREFIX}/llvm-project
           LLVM_VERSION=16.0.6
           OMP_DIR=${LLVM_DIR}/openmp
-          HPX_DIR=${PREFIX}/hpx/cmake-install/${BUILD_TYPE}/lib/cmake/HPX
+          HPX_DIR=${PREFIX}/hpx/cmake-build/${BUILD_TYPE}/lib/cmake/HPX
           HPXC_DIR=${PREFIX}/hpxc
           PROJECT=hpxmp
           BUILD_DIR=${OMP_DIR}/cmake-build-${PROJECT}/${BUILD_TYPE}/
 
           mkdir -p ${PREFIX}
 
+          pip install psutil
+          cpan Pod::Usage
+
           git clone --depth=1 -b hpxmp-v16 https://github.com/light2802/llvm-project.git ${LLVM_DIR}
 
           cmake                                \
             -DCMAKE_BUILD_TYPE=${BUILD_TYPE}   \
-            -DCMAKE_VERBOSE_MAKEFILE=ON        \
-            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-            -DCMAKE_CXX_FLAGS="-std=c++17"     \
             -DHPX_DIR=${HPX_DIR}               \
             -DWITH_HPXC=ON                     \
             -DHPXC_DIR=${HPXC_DIR}             \
             -DOPENMP_ENABLE_LIBOMPTARGET=OFF   \
             -DLIBOMP_OMPD_SUPPORT=OFF          \
             -DLIBOMP_USE_STDCPPLIB:BOOL=TRUE   \
+            -DCMAKE_TOOLCHAIN_FILE="C:/projects/vcpkg/scripts/buildsystems/vcpkg.cmake" \
             -DCMAKE_INSTALL_PREFIX=${OMP_DIR}/cmake-install-${PROJECT}/${BUILD_TYPE} \
             -Wdev -S ${OMP_DIR} -B ${BUILD_DIR}
 
           cmake --build ${BUILD_DIR} --parallel
-          cmake --install ${BUILD_DIR}/ --prefix ${OMP_DIR}/cmake-install-${PROJECT}/${BUILD_TYPE}
+          #cmake --install ${BUILD_DIR}/ --prefix ${OMP_DIR}/cmake-install-${PROJECT}/${BUILD_TYPE}
 
       # - name: Build OMP examples
       #   shell: bash
@@ -128,6 +146,7 @@ jobs:
       #     cmake --install ${EXAMPLE_PATH}/cmake-build-omp/${BUILD_TYPE}/ --prefix ${EXAMPLE_PATH}/cmake-install-omp/${BUILD_TYPE}
 
       - name: Build HPXMP examples
+        shell: bash
         run: |
           PREFIX="${CURRENT_DIR:=$(pwd)}"
 
@@ -141,13 +160,11 @@ jobs:
 
           cmake                                                                                           \
             -DCMAKE_BUILD_TYPE=${BUILD_TYPE}                                                              \
-            -DCMAKE_VERBOSE_MAKEFILE=ON                                                                   \
-            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON                                                            \
-            -DCMAKE_CXX_FLAGS="-std=c++17 -fopenmp"                                                       \
+            -DCMAKE_CXX_FLAGS="-fopenmp"                                                       \
             -DHPX_DIR=${HPX_DIR}                                                                          \
             -DWITH_HPXC=ON                                                                                \
-            -DOMP_LIB_PATH=${PREFIX}/llvm-project/openmp/cmake-install-hpxmp/${BUILD_TYPE}/lib/libomp.so  \
+            -DOMP_LIB_PATH=${PREFIX}/llvm-project/openmp/cmake-build-hpxmp/${BUILD_TYPE}/lib/libomp.so  \
             -Wdev -S ${EXAMPLE_PATH} -B ${EXAMPLE_PATH}/cmake-build-hpxmp/${BUILD_TYPE}
 
           cmake --build ${EXAMPLE_PATH}/cmake-build-hpxmp/${BUILD_TYPE}/ --parallel
-          cmake --install ${EXAMPLE_PATH}/cmake-build-hpxmp/${BUILD_TYPE}/ --prefix ${EXAMPLE_PATH}/cmake-install-hpxmp/${BUILD_TYPE}
+          #cmake --install ${EXAMPLE_PATH}/cmake-build-hpxmp/${BUILD_TYPE}/ --prefix ${EXAMPLE_PATH}/cmake-install-hpxmp/${BUILD_TYPE}
