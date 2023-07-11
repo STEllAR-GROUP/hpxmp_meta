@@ -24,8 +24,7 @@ jobs:
       - name: Install deps
         shell: bash
         run: |
-          cpan install App::cpanminus
-          cpanm Pod::Usage
+          perl -MCPAN -e "install Pod::Usage"
 
       - name: Install dependencies
         run: |
