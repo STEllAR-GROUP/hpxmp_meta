@@ -44,7 +44,7 @@ jobs:
           rm -rf ${HPX_DIR}  
           #mkdir -p ${PREFIX}
 
-          git clone https://github.com/STEllAR-GROUP/hpx.git ${HPX_DIR}
+          git clone -b on_finalize https://github.com/STEllAR-GROUP/hpx.git ${HPX_DIR}
 
           cd ${HPX_DIR}
           cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE}         \
@@ -69,7 +69,7 @@ jobs:
 
           mkdir -p ${PREFIX}
 
-          git clone https://github.com/STEllAR-GROUP/hpxc.git ${HPXC_DIR}
+          git clone -b hpxmp https://github.com/light2802/hpxc.git ${HPXC_DIR}
 
           cmake                                                         \
           -DCMAKE_BUILD_TYPE=${BUILD_TYPE}                              \
