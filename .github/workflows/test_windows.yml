@@ -32,8 +32,8 @@ jobs:
       - name: Install deps
         shell: bash
         run: |
-          cpan Pod::Usage
           cpan CPAN::Author
+          cpan Pod::Usage
 
       - name: Install HPX
         shell: bash
