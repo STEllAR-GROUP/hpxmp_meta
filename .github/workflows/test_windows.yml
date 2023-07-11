@@ -44,7 +44,7 @@ jobs:
           rm -rf ${HPX_DIR}  
           #mkdir -p ${PREFIX}
 
-          git clone -b on_finalize https://github.com/STEllAR-GROUP/hpx.git ${HPX_DIR}
+          git clone -b on_finalize https://github.com/light2802/hpx.git ${HPX_DIR}
 
           cd ${HPX_DIR}
           cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE}         \
