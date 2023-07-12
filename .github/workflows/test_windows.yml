@@ -82,41 +82,37 @@ jobs:
           #cmake --install ${HPXC_DIR}/cmake-build/${BUILD_TYPE}/ --prefix ${HPXC_DIR}/cmake-install/${BUILD_TYPE}
 
       - name: Build hpxmp
-        shell: bash
         run: |
-          PREFIX="${CURRENT_DIR:=$(pwd)}"
+          $PREFIX = pwd
 
-          BUILD_TYPE=Release
-          LLVM_DIR=${PREFIX}/llvm-project
-          LLVM_VERSION=16.0.6
-          OMP_DIR=${LLVM_DIR}/openmp
-          HPX_DIR=${PREFIX}/hpx/cmake-build/${BUILD_TYPE}/lib/cmake/HPX
-          HPXC_DIR=${PREFIX}/hpxc
-          PROJECT=hpxmp
-          BUILD_DIR=${OMP_DIR}/cmake-build-${PROJECT}/${BUILD_TYPE}/
-
-          mkdir -p ${PREFIX}
+          $BUILD_TYPE = "Release"
+          $LLVM_DIR = "$($PREFIX)/llvm-project"
+          $LLVM_VERSION = "16.0.6"
+          $OMP_DIR = "$($LLVM_DIR)/openmp"
+          $HPX_DIR = "$($PREFIX)/hpx/cmake-build/$($BUILD_TYPE)/lib/cmake/HPX"
+          $HPXC_DIR = "$($PREFIX)/hpxc"
+          $PROJECT = "hpxmp"
+          $BUILD_DIR= "$($OMP_DIR)/cmake-build-$($PROJECT)/$($BUILD_TYPE)/"
 
           pip install psutil
-          export PATH=/c/Strawberry/perl/bin:$PATH
 
-          git clone --depth=1 -b hpxmp-v16 https://github.com/light2802/llvm-project.git ${LLVM_DIR}
+          git clone --depth=1 -b hpxmp-v16 https://github.com/light2802/llvm-project.git $($LLVM_DIR)
 
-          cmake                                \
-            -DCMAKE_BUILD_TYPE=${BUILD_TYPE}   \
-            -DHPX_DIR=${HPX_DIR}               \
-            -DWITH_HPXC=ON                     \
-            -DHPXC_DIR=${HPXC_DIR}             \
-            -DOPENMP_ENABLE_LIBOMPTARGET=OFF   \
-            -DLIBOMP_OMPD_SUPPORT=OFF          \
-            -DLIBOMP_USE_STDCPPLIB:BOOL=TRUE   \
-            -DCMAKE_TOOLCHAIN_FILE="C:/projects/vcpkg/scripts/buildsystems/vcpkg.cmake" \
-            -DCMAKE_INSTALL_PREFIX=${OMP_DIR}/cmake-install-${PROJECT}/${BUILD_TYPE} \
-            -Wdev -S ${OMP_DIR} -B ${BUILD_DIR} \
-            -G'Visual Studio 17 2022'
+          cmake                                `
+          -DCMAKE_BUILD_TYPE=$($BUILD_TYPE)   `
+          -DHPX_DIR=$($HPX_DIR)               `
+          -DWITH_HPXC=ON                     `
+          -DHPXC_DIR=$($HPXC_DIR)             `
+          -DOPENMP_ENABLE_LIBOMPTARGET=OFF   `
+          -DLIBOMP_OMPD_SUPPORT=OFF          `
+          -DLIBOMP_USE_STDCPPLIB:BOOL=TRUE   `
+          -DCMAKE_TOOLCHAIN_FILE="C:/projects/vcpkg/scripts/buildsystems/vcpkg.cmake" `
+          -DCMAKE_INSTALL_PREFIX="$($OMP_DIR)/cmake-install-$($PROJECT)/$($BUILD_TYPE)" `
+          -Wdev -S $($OMP_DIR) -B $($BUILD_DIR) `
+          -G'Visual Studio 17 2022'
 
-          cmake --build ${BUILD_DIR} --parallel
-          #cmake --install ${BUILD_DIR}/ --prefix ${OMP_DIR}/cmake-install-${PROJECT}/${BUILD_TYPE}
+          cmake --build $($BUILD_DIR) --parallel
+          cmake --install $($BUILD_DIR) --prefix "$($OMP_DIR)/cmake-install-$($PROJECT)/$($BUILD_TYPE)"
 
       # - name: Build OMP examples
       #   shell: bash
