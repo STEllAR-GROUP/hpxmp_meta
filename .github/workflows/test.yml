@@ -132,6 +132,9 @@ jobs:
 
       - name: Build HPXMP examples
         shell: bash
+        env:
+          CC:   gcc
+          CXX:  g++
         run: |
           PREFIX="${CURRENT_DIR:=$(pwd)}"
 
