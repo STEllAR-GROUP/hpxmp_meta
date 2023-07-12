@@ -98,6 +98,7 @@ jobs:
           mkdir -p ${PREFIX}
 
           pip install psutil
+          export PATH=/c/Strawberry/perl/bin:$PATH
 
           git clone --depth=1 -b hpxmp-v16 https://github.com/light2802/llvm-project.git ${LLVM_DIR}
 
