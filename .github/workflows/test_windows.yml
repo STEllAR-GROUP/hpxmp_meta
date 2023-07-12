@@ -100,9 +100,9 @@ jobs:
 
           cmake                                `
           -DCMAKE_BUILD_TYPE=$($BUILD_TYPE)   `
-          -DHPX_DIR=$($HPX_DIR)               `
+          -DHPX_DIR="$($HPX_DIR)"               `
           -DWITH_HPXC=ON                     `
-          -DHPXC_DIR=$($HPXC_DIR)             `
+          -DHPXC_DIR="$($HPXC_DIR)"             `
           -DOPENMP_ENABLE_LIBOMPTARGET=OFF   `
           -DLIBOMP_OMPD_SUPPORT=OFF          `
           -DLIBOMP_USE_STDCPPLIB:BOOL=TRUE   `
