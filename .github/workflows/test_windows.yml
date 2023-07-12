@@ -107,12 +107,11 @@ jobs:
           -DLIBOMP_OMPD_SUPPORT=OFF          `
           -DLIBOMP_USE_STDCPPLIB:BOOL=TRUE   `
           -DCMAKE_TOOLCHAIN_FILE="C:/projects/vcpkg/scripts/buildsystems/vcpkg.cmake" `
-          -DCMAKE_INSTALL_PREFIX="$($OMP_DIR)/cmake-install-$($PROJECT)/$($BUILD_TYPE)" `
           -Wdev -S $($OMP_DIR) -B $($BUILD_DIR) `
           -G'Visual Studio 17 2022'
 
           cmake --build $($BUILD_DIR) --parallel
-          cmake --install $($BUILD_DIR) --prefix "$($OMP_DIR)/cmake-install-$($PROJECT)/$($BUILD_TYPE)"
+          #cmake --install $($BUILD_DIR) --prefix "$($OMP_DIR)/cmake-install-$($PROJECT)/$($BUILD_TYPE)"
 
       # - name: Build OMP examples
       #   shell: bash
