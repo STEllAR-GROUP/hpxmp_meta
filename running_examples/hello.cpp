@@ -21,5 +21,6 @@ int main(int argc, char *argv[]) {
               << std::endl;
   }
 
+  //std::cout << "Threads running " << hpx::threads::get_thread_manager().get_thread_count() << std::endl;
   return 0;
 }

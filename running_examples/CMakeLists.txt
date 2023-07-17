@@ -21,3 +21,26 @@ if (WITH_HPXC)
 else()
   target_link_libraries(hello_world ${OMP_LIB_PATH} pthread)
 endif()
+
+add_executable(barrier barrier.cpp)
+if (WITH_HPXC)
+  target_link_libraries(barrier ${OMP_LIB_PATH} pthread HPX::hpx HPX::wrap_main)
+else()
+  target_link_libraries(barrier ${OMP_LIB_PATH} pthread)
+endif()
+
+add_executable(for for.cpp)
+if (WITH_HPXC)
+  target_link_libraries(for ${OMP_LIB_PATH} pthread HPX::hpx HPX::wrap_main)
+else()
+  target_link_libraries(for ${OMP_LIB_PATH} pthread)
+endif()
+
+add_executable(atomic atomic.cpp)
+if (WITH_HPXC)
+  target_link_libraries(atomic ${OMP_LIB_PATH} pthread HPX::hpx HPX::wrap_main)
+else()
+  target_link_libraries(atomic ${OMP_LIB_PATH} pthread)
+endif()
+
+
