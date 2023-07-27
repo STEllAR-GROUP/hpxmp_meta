@@ -25,6 +25,6 @@ cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE}               \
       -DHPX_WITH_DYNAMIC_HPX_MAIN=OFF                \
       -Wdev -S ${HPX_DIR} -B ${HPX_DIR}/cmake-build/${BUILD_TYPE}
 
-cmake --build ${HPX_DIR}/cmake-build/${BUILD_TYPE}/ --parallel 2> hpx_err_log 
-cmake --install ${HPX_DIR}/cmake-build/${BUILD_TYPE}/ --prefix ${HPX_DIR}/cmake-install/${BUILD_TYPE} 2> hpx_err
+cmake --build ${HPX_DIR}/cmake-build/${BUILD_TYPE}/ --parallel
+cmake --install ${HPX_DIR}/cmake-build/${BUILD_TYPE}/ --prefix ${HPX_DIR}/cmake-install/${BUILD_TYPE}
 
