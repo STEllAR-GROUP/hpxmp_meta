@@ -11,7 +11,7 @@ HPX_DIR=${PREFIX}/hpx/
 
 mkdir -p ${PREFIX}
 
-git clone git@github.com:STEllAR-GROUP/hpx.git ${HPX_DIR}
+git clone https://github.com/STEllAR-GROUP/hpx.git ${HPX_DIR}
 
 cd ${HPX_DIR}
 cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE}               \

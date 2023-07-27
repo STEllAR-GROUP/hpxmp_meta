@@ -15,7 +15,7 @@ HPX_DIR=${PREFIX}/hpx/cmake-install/${BUILD_TYPE}/lib64/cmake/HPX
 mkdir -p ${PREFIX}
 
 if [ ! -d ${HPXC_DIR} ]; then
-  git clone -b hpxmp git@github.com:rtohid/hpxc.git ${HPXC_DIR}
+  git clone https://github.com/STEllAR-GROUP/hpxc.git ${HPXC_DIR}
 fi
 
 cmake                                              		\
