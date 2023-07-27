@@ -25,7 +25,7 @@ BUILD_DIR=${OMP_DIR}/cmake-build-${PROJECT}/${BUILD_TYPE}/
 mkdir -p ${PREFIX}
 
 if [ ! -d ${LLVM_DIR} ]; then
-  git clone --depth=1 -b hpxc git@github.com:light2802/llvm-project.git ${LLVM_DIR}
+  git clone --depth=1 -b hpxmp-v16 https://github.com/light2802/llvm-project.git ${LLVM_DIR}
 fi
 
 rm -rf ${BUILD_DIR}
