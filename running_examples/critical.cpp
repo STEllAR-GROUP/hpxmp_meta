@@ -8,15 +8,20 @@
 #include <hpx/hpx_main.hpp>
 #endif // HPXC
 
-int main() {
-    int x=0;
-#pragma omp parallel for
-    for (int i = 0; i<10000000; i++)
+int main()
+{
+    int x = 0, y = 0, z = 0;
+#pragma omp parallel num_threads(2)
     {
-        #pragma omp atomic
-        x++;
+#pragma omp critical
+        {
+            x++;
+            y += 2;
+            z += 3;
+        }
     }
-    printf("x = %d\n", x);
-    if(x != 10000000) return 1;
+    printf("x = %d,y = %d, z=%d\n", x, y, z);
+    if (x != 2 || y != 4 || z != 6)
+        return 1;
     return 0;
 }
