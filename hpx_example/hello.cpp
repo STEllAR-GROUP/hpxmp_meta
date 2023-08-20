@@ -7,11 +7,10 @@
 #include <iostream>
 #include <omp.h>
 
-#ifdef HPXC
-#include <hpx/hpx_main.hpp>
-#endif // HPXC
-
-int main(int argc, char *argv[]) {
+#include <hpx/hpx_start.hpp>
+#include <hpx/hpx_suspend.hpp>
+#include <hpx/future.hpp>
+int hello() {
 
   std::cout << "Starting ..." << std::endl;
 
@@ -21,6 +20,13 @@ int main(int argc, char *argv[]) {
               << std::endl;
   }
 
-  //std::cout << "Threads running " << hpx::threads::get_thread_manager().get_thread_count() << std::endl;
   return 0;
+}
+
+int main(int argc, char* argv[])
+{
+    hpx::start(nullptr, argc, argv);
+    hpx::post(&hello);
+    hpx::post([]() { hpx::disconnect(); });
+    //return hpx::disconnect();
 }

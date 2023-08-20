@@ -1,0 +1,160 @@
+# Copyright (c) 2023 Aarya Chaumal
+#
+# SPDX-License-Identifier: BSL-1.0
+# Distributed under the Boost Software License, Version 1.0. (See accompanying
+# file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+
+name: Test examples on Linux
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: stellargroup/build_env:latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install HPX
+        shell: bash
+        run: |
+          PREFIX="${CURRENT_DIR:=$(pwd)}"
+            
+          BUILD_TYPE=Release
+          HPX_DIR=${PREFIX}/hpx/  
+          mkdir -p ${PREFIX}
+
+          git clone -b on_finalize https://github.com/light2802/hpx.git ${HPX_DIR}
+            
+          cd ${HPX_DIR}
+          cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE}         \
+          -DCMAKE_CXX_FLAGS="-std=c++17"                 \
+          -DHPX_WITH_THREAD_IDLE_RATES=ON                \
+          -DHPX_WITH_MALLOC=tcmalloc                     \
+          -DHPX_WITH_EXAMPLES=OFF                        \
+          -DHPX_WITH_APEX=ON                             \
+          -DHPX_WITH_FETCH_ASIO=ON                       \
+          -DHPX_WITH_DYNAMIC_HPX_MAIN=OFF                \
+          -Wdev -S ${HPX_DIR} -B ${HPX_DIR}/cmake-build/${BUILD_TYPE}
+            
+          cmake --build ${HPX_DIR}/cmake-build/${BUILD_TYPE}/ --parallel 
+          cmake --install ${HPX_DIR}/cmake-build/${BUILD_TYPE}/ --prefix ${HPX_DIR}/cmake-install/${BUILD_TYPE}
+
+      - name: Install HPXC
+        shell: bash
+        run: |
+          PREFIX="${CURRENT_DIR:=$(pwd)}"
+
+          BUILD_TYPE=Release
+          HPXC_DIR=${PREFIX}/hpxc
+          HPX_DIR=${PREFIX}/hpx/cmake-install/${BUILD_TYPE}/lib/cmake/HPX
+
+          mkdir -p ${PREFIX}
+
+          git clone -b hpxmp https://github.com/light2802/hpxc.git ${HPXC_DIR}
+
+          cmake                                                         \
+          -DCMAKE_BUILD_TYPE=${BUILD_TYPE}                              \
+          -DHPX_DIR=${HPX_DIR}                                          \
+          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON                            \
+          -DCMAKE_CXX_FLAGS="-std=c++17"                                \
+          -Wdev -S ${HPXC_DIR} -B ${HPXC_DIR}/cmake-build/${BUILD_TYPE} \
+          -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+
+          cmake --build ${HPXC_DIR}/cmake-build/${BUILD_TYPE}/ --parallel 
+          cmake --install ${HPXC_DIR}/cmake-build/${BUILD_TYPE}/ --prefix ${HPXC_DIR}/cmake-install/${BUILD_TYPE}
+
+      - name: Build hpxmp
+        shell: bash
+        run: |
+          PREFIX="${CURRENT_DIR:=$(pwd)}"
+
+          BUILD_TYPE=Release
+          LLVM_DIR=${PREFIX}/llvm-project
+          LLVM_VERSION=16.0.6
+          OMP_DIR=${LLVM_DIR}/openmp
+          HPX_DIR=${PREFIX}/hpx/cmake-install/${BUILD_TYPE}/lib/cmake/HPX
+          HPXC_DIR=${PREFIX}/hpxc
+          PROJECT=hpxmp
+          BUILD_DIR=${OMP_DIR}/cmake-build-${PROJECT}/${BUILD_TYPE}/
+
+          mkdir -p ${PREFIX}
+
+          git clone --depth=1 -b hpxmp-v16 https://github.com/light2802/llvm-project.git ${LLVM_DIR}
+
+          cmake                                \
+            -DCMAKE_BUILD_TYPE=${BUILD_TYPE}   \
+            -DCMAKE_VERBOSE_MAKEFILE=ON        \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+            -DCMAKE_CXX_FLAGS="-std=c++17"     \
+            -DHPX_DIR=${HPX_DIR}               \
+            -DWITH_HPXC=ON                     \
+            -DHPXC_DIR=${HPXC_DIR}             \
+            -DOPENMP_ENABLE_LIBOMPTARGET=OFF   \
+            -DLIBOMP_OMPD_SUPPORT=OFF          \
+            -DLIBOMP_USE_STDCPPLIB:BOOL=TRUE   \
+            -DCMAKE_INSTALL_PREFIX=${OMP_DIR}/cmake-install-${PROJECT}/${BUILD_TYPE} \
+            -Wdev -S ${OMP_DIR} -B ${BUILD_DIR}
+
+          cmake --build ${BUILD_DIR} --parallel
+          cmake --install ${BUILD_DIR}/ --prefix ${OMP_DIR}/cmake-install-${PROJECT}/${BUILD_TYPE}
+
+      # - name: Build OMP examples
+      #   shell: bash
+      #   run: |
+      #     PREFIX="${CURRENT_DIR:=$(pwd)}"
+
+      #     EXAMPLE_PATH=${PREFIX}/running_examples
+      #     BUILD_TYPE=Debug
+      #     PROJECT=examples
+
+      #     mkdir -p ${PREFIX}
+
+      #     rm -rf ${EXAMPLE_PATH}/cmake-build-omp
+
+      #     cmake                                                                                     \
+      #       -DCMAKE_BUILD_TYPE=${BUILD_TYPE}                                                        \
+      #       -DCMAKE_VERBOSE_MAKEFILE=ON                                                             \
+      #       -DCMAKE_EXPORT_COMPILE_COMMANDS=ON                                                      \
+      #       -DCMAKE_CXX_FLAGS="-std=c++17 -fopenmp"                                                 \
+      #       -DCMAKE_CXX_COMPILER=g++                                                                \
+      #       -DCMAKE_C_COMPILER=gcc                                                                  \
+      #       -DHPX_DIR=${HPX_DIR}                                                                    \
+      #       -DOMP_LIB_PATH=${PREFIX}/llvm-project/openmp/cmake-install-omp/${BUILD_TYPE}/lib/libomp.so  \
+      #       -Wdev -S ${EXAMPLE_PATH} -B ${EXAMPLE_PATH}/cmake-build-omp/${BUILD_TYPE}
+
+      #     cmake --build ${EXAMPLE_PATH}/cmake-build-omp/${BUILD_TYPE}/ --parallel
+      #     cmake --install ${EXAMPLE_PATH}/cmake-build-omp/${BUILD_TYPE}/ --prefix ${EXAMPLE_PATH}/cmake-install-omp/${BUILD_TYPE}
+
+      - name: Build HPXMP examples
+        shell: bash
+        env:
+          CC:   gcc
+          CXX:  g++
+        run: |
+          PREFIX="${CURRENT_DIR:=$(pwd)}"
+
+          EXAMPLE_PATH=${PREFIX}/running_examples
+          BUILD_TYPE=Release
+          HPX_DIR=${PREFIX}/hpx/cmake-install/${BUILD_TYPE}/lib/cmake/HPX
+
+          mkdir -p ${PREFIX}
+
+          rm -rf ${EXAMPLE_PATH}/cmake-build-hpxmp
+
+          cmake                                                                                           \
+            -DCMAKE_BUILD_TYPE=${BUILD_TYPE}                                                              \
+            -DCMAKE_VERBOSE_MAKEFILE=ON                                                                   \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON                                                            \
+            -DCMAKE_CXX_FLAGS="-std=c++17 -fopenmp"                                                       \
+            -DHPX_DIR=${HPX_DIR}                                                                          \
+            -DWITH_HPXC=ON                                                                                \
+            -DOMP_LIB_PATH=${PREFIX}/llvm-project/openmp/cmake-install-hpxmp/${BUILD_TYPE}/lib/libomp.so  \
+            -Wdev -S ${EXAMPLE_PATH} -B ${EXAMPLE_PATH}/cmake-build-hpxmp/${BUILD_TYPE}
+
+          cmake --build ${EXAMPLE_PATH}/cmake-build-hpxmp/${BUILD_TYPE}/ --parallel
+          cmake --install ${EXAMPLE_PATH}/cmake-build-hpxmp/${BUILD_TYPE}/ --prefix ${EXAMPLE_PATH}/cmake-install-hpxmp/${BUILD_TYPE}
