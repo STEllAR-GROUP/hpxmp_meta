@@ -2,6 +2,12 @@
 
 set -e  # Exit immediately if a command exits with a non-zero status
 
+# validate parameters
+if [ "$1" != "Debug" ] && [ "$1" != "RelWithDebInfo" ] && [ "$1" != "Release" ]; then
+    echo "Error: Invalid argument. Please use 'Debug', 'RelWithDebInfo', or 'Release'."
+    return 1
+fi
+
 # Get the directory of the currently executing script
 DIR="$(dirname "$0")"
 

@@ -14,9 +14,9 @@ CLEAN_BUILD=${4:-no}
 
 # Paths setup
 PREFIX="$CURRENT_DIR"/../..
-SOURCE_PATH="${PREFIX}/hpxmp_meta/src"
-BUILD_PATH="${PREFIX}/hpxmp_meta/build_${BUILD_TYPE}"
-INSTALL_PATH="${PREFIX}/hpxmp_meta/install_${BUILD_TYPE}"
+SOURCE_PATH="${PREFIX}/hpxmp_meta/hpxmp_tests/src"
+BUILD_PATH="${PREFIX}/hpxmp_meta/hpxmp_test/build_${BUILD_TYPE}"
+INSTALL_PATH="${PREFIX}/hpxmp_meta/hpxmp_test/install_${BUILD_TYPE}"
 HPX_DIR="${PREFIX}/hpx/cmake-install/${BUILD_TYPE}/lib64/cmake/HPX"
 HPXC_INCLUDE_PATH="${PREFIX}/hpxc/cmake-install/${BUILD_TYPE}/include"
 OMP_LIB_PATH="${PREFIX}/llvm-project/openmp/cmake-install-hpxmp/${BUILD_TYPE}/lib/"

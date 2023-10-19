@@ -28,7 +28,7 @@ set -e
 
 # Clone if the directory doesn't exist
 if [ ! -d ${SRC_DIR} ]; then
-  git clone https://github.com/STEllAR-GROUP/hpxc ${SRC_DIR}
+  git clone -b ref_counted_keys https://github.com/STEllAR-GROUP/hpxc ${SRC_DIR}
 fi
 
 # Running CMake commands
