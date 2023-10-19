@@ -13,7 +13,7 @@ set -e
 CURRENT_DIR=$1
 PREFIX="${CURRENT_DIR:=$(pwd)}"
 
-BUILD_TYPE=Debug
+BUILD_TYPE=RelWithDebInfo
 LLVM_DIR=${PREFIX}/llvm-project
 LLVM_VERSION=16.0.6
 OMP_DIR=${LLVM_DIR}/openmp
