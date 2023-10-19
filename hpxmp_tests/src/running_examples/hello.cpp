@@ -11,7 +11,8 @@
 #include <hpx/hpx_main.hpp>
 #endif // HPXC
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 
   std::cout << "Starting ..." << std::endl;
 
