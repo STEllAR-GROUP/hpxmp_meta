@@ -7,8 +7,10 @@ COMPILER=${3:-llvm}
 CLEAN_BUILD=${4:-no}
 
 # Paths setup
-PREFIX="${CURRENT_DIR}"/../..
-SRC_DIR=${PREFIX}/hpx
+PREFIX="${CURRENT_DIR}"/..
+DEPENDENCIES="${PREFIX}"/dependencies
+
+SRC_DIR=${DEPENDENCIES}/hpx
 BUILD_DIR=${SRC_DIR}/cmake-build/${BUILD_TYPE}
 INSTALL_DIR=${SRC_DIR}/cmake-install/${BUILD_TYPE}
 
@@ -44,5 +46,5 @@ cmake                                     \
 -D "HPX_WITH_THREAD_DEBUG_INFO=ON"
 
 # Build and install
-cmake --build ${BUILD_DIR}
+cmake --build ${BUILD_DIR} -- -j8
 cmake --install ${BUILD_DIR}

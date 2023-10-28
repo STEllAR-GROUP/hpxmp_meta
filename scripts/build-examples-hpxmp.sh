@@ -13,13 +13,22 @@ COMPILER=${3:-llvm}
 CLEAN_BUILD=${4:-no}
 
 # Paths setup
-PREFIX="$CURRENT_DIR"/../..
-SOURCE_PATH="${PREFIX}/hpxmp_meta/hpxmp_tests/src"
-BUILD_PATH="${PREFIX}/hpxmp_meta/hpxmp_test/build_${BUILD_TYPE}"
-INSTALL_PATH="${PREFIX}/hpxmp_meta/hpxmp_test/install_${BUILD_TYPE}"
-HPX_DIR="${PREFIX}/hpx/cmake-install/${BUILD_TYPE}/lib64/cmake/HPX"
-HPXC_INCLUDE_PATH="${PREFIX}/hpxc/cmake-install/${BUILD_TYPE}/include"
-OMP_LIB_PATH="${PREFIX}/llvm-project/openmp/cmake-install-hpxmp/${BUILD_TYPE}/lib/"
+PREFIX="$CURRENT_DIR"/..
+DEPENDENCIES="${PREFIX}/dependencies"
+
+# The value depends on the operating system
+if [ -d "${DEPENDENCIES}/hpx/cmake-install/${BUILD_TYPE}/lib64" ]; then
+  LIB64_OR_LIB="lib64"
+else
+  LIB64_OR_LIB="lib"
+fi
+HPX_DIR=${DEPENDENCIES}/hpx/cmake-install/${BUILD_TYPE}/${LIB64_OR_LIB}/cmake/HPX
+HPXC_INCLUDE_PATH="${DEPENDENCIES}/hpxc/cmake-install/${BUILD_TYPE}/include"
+OMP_LIB_PATH="${DEPENDENCIES}/llvm-project/openmp/cmake-install-hpxmp/${BUILD_TYPE}/lib"
+
+SOURCE_PATH="${PREFIX}/hpxmp_tests/src"
+BUILD_PATH="${PREFIX}/hpxmp_tests/build_${BUILD_TYPE}"
+INSTALL_PATH="${PREFIX}/hpxmp_tests/install_${BUILD_TYPE}"
 
 # Load modules
 module load $COMPILER boost cmake

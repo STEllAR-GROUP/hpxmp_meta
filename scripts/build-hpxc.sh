@@ -7,11 +7,21 @@ COMPILER=${3:-llvm}
 CLEAN_BUILD=${4:-no}
 
 # Paths setup
-PREFIX="${CURRENT_DIR}"/../..
-SRC_DIR=${PREFIX}/hpxc
+PREFIX="${CURRENT_DIR}"/..
+DEPENDENCIES="${PREFIX}"/dependencies
+
+# The value depends on the operating system
+if [ -d "${DEPENDENCIES}/hpx/cmake-install/${BUILD_TYPE}/lib64" ]; then
+  LIB64_OR_LIB="lib64"
+else
+  LIB64_OR_LIB="lib"
+fi
+HPX_DIR=${DEPENDENCIES}/hpx/cmake-install/${BUILD_TYPE}/${LIB64_OR_LIB}/cmake/HPX
+
+SRC_DIR=${DEPENDENCIES}/hpxc
 BUILD_DIR=${SRC_DIR}/cmake-build/${BUILD_TYPE}
 INSTALL_DIR=${SRC_DIR}/cmake-install/${BUILD_TYPE}
-HPX_DIR=${PREFIX}/hpx/cmake-install/${BUILD_TYPE}/lib64/cmake/HPX
+
 
 # Load modules based on the chosen compiler
 module load $COMPILER boost cmake
@@ -42,5 +52,5 @@ cmake                                   \
 -D "CMAKE_POSITION_INDEPENDENT_CODE=ON"
 
 # Build and install
-cmake --build ${BUILD_DIR}
+cmake --build ${BUILD_DIR} -- -j 4
 cmake --install ${BUILD_DIR}
