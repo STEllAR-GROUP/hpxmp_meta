@@ -8,9 +8,9 @@
 
 # Input arguments with default values
 BUILD_TYPE=${1:-RelWithDebInfo}
-CURRENT_DIR="${2:-$(realpath "$(dirname "$0")")}"
-COMPILER=${3:-llvm}
-CLEAN_BUILD=${4:-no}
+CLEAN_BUILD=${2:-no}
+CURRENT_DIR="${3:-$(realpath "$(dirname "$0")")}"
+COMPILER=${4:-llvm}
 
 # Paths setup
 PREFIX="$CURRENT_DIR"/..
@@ -36,8 +36,7 @@ module load $COMPILER boost cmake
 # Clean build and install directories if CLEAN_BUILD == 'yes'
 if [ "$CLEAN_BUILD" = "yes" ]; then
   echo "Cleaning build and install directories..."
-  rm -rf "${BUILD_PATH}"
-  rm -rf "${INSTALL_PATH}"
+  rm -rf "${BUILD_PATH}" "${INSTALL_PATH}"
 fi
 
 # Create necessary directories (if they don't exist)

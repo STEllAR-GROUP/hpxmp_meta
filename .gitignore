@@ -36,3 +36,5 @@ cmake-build-*
 *RelWithDebInfo*
 *Debug*
 *Release*
+
+dependencies

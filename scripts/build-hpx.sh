@@ -2,9 +2,9 @@
 
 # Input arguments with default values
 BUILD_TYPE=${1:-RelWithDebInfo}
-CURRENT_DIR="${2:-$(realpath "$(dirname "$0")")}"
-COMPILER=${3:-llvm}
-CLEAN_BUILD=${4:-no}
+CLEAN_BUILD=${2:-no}
+CURRENT_DIR="${3:-$(realpath "$(dirname "$0")")}"
+COMPILER=${4:-llvm}
 
 # Paths setup
 PREFIX="${CURRENT_DIR}"/..
@@ -20,8 +20,7 @@ module load $COMPILER boost cmake
 # Clean build and install directories if CLEAN_BUILD == 'yes'
 if [ "$CLEAN_BUILD" = "yes" ]; then
   echo "Cleaning build and install directories..."
-  rm -rf "${BUILD_DIR}"
-  rm -rf "${INSTALL_DIR}"
+  rm -rf "${BUILD_DIR}" "${INSTALL_DIR}"
 fi
 
 # Error checks
@@ -46,5 +45,5 @@ cmake                                     \
 -D "HPX_WITH_THREAD_DEBUG_INFO=ON"
 
 # Build and install
-cmake --build ${BUILD_DIR} -- -j8
+cmake --build ${BUILD_DIR}
 cmake --install ${BUILD_DIR}
