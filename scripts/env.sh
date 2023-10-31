@@ -9,9 +9,8 @@ __set_hpxmp_env_(){
         return 1
     fi
 
-    BUILD_TYPE="$1"
-    CURRENT_DIR="${2:-$(realpath "$(dirname "${BASH_SOURCE[0]}")"/..)}"
-    echo "${CURRENT_DIR}"
+    local BUILD_TYPE="$1"
+    local CURRENT_DIR="${2:-$(realpath "$(dirname "${BASH_SOURCE[0]}")"/..)}"
     module load llvm boost cmake
     export LD_LIBRARY_PATH="${CURRENT_DIR}/dependencies/llvm-project/openmp/cmake-install-hpxmp/${BUILD_TYPE}/lib/:$LD_LIBRARY_PATH"
     export OMP_NUM_THREADS=8
