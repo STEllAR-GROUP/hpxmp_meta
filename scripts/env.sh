@@ -1,6 +1,22 @@
-#Load new environment
-CURRENT_DIR="${1:-$(realpath "$(dirname "$0")")}"
+# Usage: source env.sh <BUILD_TYPE> <CURRENT_DIR>
 
-module load llvm boost cmake
-export LD_LIBRARY_PATH=$(CURRENT_DIR)/../dependencies/llvm-project/openmp/cmake-install-hpxmp/${BUILD_TYPE}/lib/:$LD_LIBRARY_PATH
-export OMP_NUM_THREADS=8
+# In function so that local variables don't pollute the environment
+__set_hpxmp_env_(){
+
+    # validate parameters
+    if [ "$1" != "Debug" ] && [ "$1" != "RelWithDebInfo" ] && [ "$1" != "Release" ]; then
+        echo "Error: Invalid argument. Please use 'Debug', 'RelWithDebInfo', or 'Release'."
+        return 1
+    fi
+
+    BUILD_TYPE="$1"
+    CURRENT_DIR="${2:-$(realpath "$(dirname "${BASH_SOURCE[0]}")"/..)}"
+    echo "${CURRENT_DIR}"
+    module load llvm boost cmake
+    export LD_LIBRARY_PATH="${CURRENT_DIR}/dependencies/llvm-project/openmp/cmake-install-hpxmp/${BUILD_TYPE}/lib/:$LD_LIBRARY_PATH"
+    export OMP_NUM_THREADS=8
+}
+
+__set_hpxmp_env_ "$@"
+
+unset __set_hpxmp_env_
