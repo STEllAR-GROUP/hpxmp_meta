@@ -6,10 +6,10 @@
 
 #include <omp.h>
 #include <stdio.h>
+#include <math.h>
 
 #ifdef HPXC
 #include <hpx/hpx_main.hpp>
-#include <math.h>
 // #include <hpxc/util/wrap_main.hpp>
 #endif // HPXC
 

@@ -27,8 +27,8 @@ HPXC_INCLUDE_PATH="${DEPENDENCIES}/hpxc/cmake-install/${BUILD_TYPE}/include"
 OMP_LIB_PATH="${DEPENDENCIES}/llvm-project/openmp/cmake-install-hpxmp/${BUILD_TYPE}/lib"
 
 SOURCE_PATH="${PREFIX}/hpxmp_tests/src"
-BUILD_PATH="${PREFIX}/hpxmp_tests/build_${BUILD_TYPE}"
-INSTALL_PATH="${PREFIX}/hpxmp_tests/install_${BUILD_TYPE}"
+BUILD_PATH="${PREFIX}/hpxmp_tests/build_${BUILD_TYPE}_hpxmp"
+INSTALL_PATH="${PREFIX}/hpxmp_tests/install_${BUILD_TYPE}_hpxmp"
 
 # Load modules
 module load $COMPILER boost cmake

@@ -1,34 +1,42 @@
-#!/bin/bash
+# Input arguments with default values
+BUILD_TYPE=${1:-RelWithDebInfo}
+CLEAN_BUILD=${2:-no}
+CURRENT_DIR="${3:-$(realpath "$(dirname "$0")")}"
+COMPILER=${4:-llvm}
 
-# Copyright (c) 2023 R. Tohid (@rtohid)
-#
-# SPDX-License-Identifier: BSL-1.0
-# Distributed under the Boost Software License, Version 1.0. (See accompanying
-# file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+# Paths setup
+PREFIX="$CURRENT_DIR"/..
+DEPENDENCIES="${PREFIX}/dependencies"
 
-module load gcc/12.3.0 boost
+OMP_LIB_PATH="${DEPENDENCIES}/llvm-project/openmp/cmake-install-omp/${BUILD_TYPE}/lib"
 
-CURRENT_DIR=$1
-PREFIX="${CURRENT_DIR:=$(pwd)}"
+SOURCE_PATH="${PREFIX}/hpxmp_tests/src"
+BUILD_PATH="${PREFIX}/hpxmp_tests/build_${BUILD_TYPE}_omp"
+INSTALL_PATH="${PREFIX}/hpxmp_tests/install_${BUILD_TYPE}_omp"
 
-EXAMPLE_PATH=${PREFIX}/running_examples
-BUILD_TYPE=Debug
-PROJECT=examples
+# Load modules
+module load $COMPILER boost cmake
 
-mkdir -p ${PREFIX}
+# Clean build and install directories if CLEAN_BUILD == 'yes'
+if [ "$CLEAN_BUILD" = "yes" ]; then
+  echo "Cleaning build and install directories..."
+  rm -rf "${BUILD_PATH}" "${INSTALL_PATH}"
+fi
 
-rm -rf ${EXAMPLE_PATH}/cmake-build-omp
+# Create necessary directories (if they don't exist)
+mkdir -p "${PREFIX}"
 
-cmake                                                                                     \
-  -DCMAKE_BUILD_TYPE=${BUILD_TYPE}                                                        \
-  -DCMAKE_VERBOSE_MAKEFILE=ON                                                             \
-  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON                                                      \
-  -DCMAKE_CXX_FLAGS="-std=c++17 -fopenmp"                                                 \
-  -DCMAKE_CXX_COMPILER=g++                                                            \
-  -DCMAKE_C_COMPILER=gcc                                                                \
-  -DHPX_DIR=${HPX_DIR}                                                                    \
-  -DOMP_LIB_PATH=${PREFIX}/llvm-project/openmp/cmake-install-omp/${BUILD_TYPE}/lib/libomp.so  \
-  -Wdev -S ${EXAMPLE_PATH} -B ${EXAMPLE_PATH}/cmake-build-omp/${BUILD_TYPE}
+# Run CMake configuration
+cmake \
+  -G "Ninja" \
+  -DCMAKE_INSTALL_PREFIX="${INSTALL_PATH}" \
+  -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" \
+  -DCMAKE_VERBOSE_MAKEFILE=ON \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  -DCMAKE_CXX_STANDARD=17 \
+  -DOMP_LIB_PATH="${OMP_LIB_PATH}" \
+  -Wdev -S "${SOURCE_PATH}" -B "${BUILD_PATH}"
 
-cmake --build ${EXAMPLE_PATH}/cmake-build-omp/${BUILD_TYPE}/ --parallel
-cmake --install ${EXAMPLE_PATH}/cmake-build-omp/${BUILD_TYPE}/ --prefix ${EXAMPLE_PATH}/cmake-install-omp/${BUILD_TYPE}
+# Build and install
+cmake --build "${BUILD_PATH}" --target tests
+cmake --install "${BUILD_PATH}"
