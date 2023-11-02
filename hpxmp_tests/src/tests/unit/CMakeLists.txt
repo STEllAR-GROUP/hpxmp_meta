@@ -54,10 +54,10 @@ foreach(test ${tests})
     add_executable(${target} ${sources})
 
     if(WITH_HPXC)
-        target_link_libraries(${target} ${HPXMP} pthread HPX::hpx HPX::wrap_main)
+        target_link_libraries(${target} ${HPXMP} pthread HPX::hpx HPX::wrap_main m)
         target_include_directories(${target} PUBLIC ${HPXC_INCLUDE_PATH})
     elseif()
-        target_link_libraries(${target} pthread)
+        target_link_libraries(${target} pthread m)
     endif()
 
     add_test(${target} ${target})
@@ -67,9 +67,9 @@ foreach(test ${tests})
             
     add_dependencies(tests ${target})
 
-    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-        target_compile_options(${target} PUBLIC -fdump-tree-ompexp)
-    endif()
+    # if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    #     target_compile_options(${target} PUBLIC -fdump-tree-ompexp)
+    # endif()
 
 endforeach()
 

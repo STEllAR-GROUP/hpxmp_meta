@@ -26,3 +26,9 @@ bash "$DIR/build-hpxmp.sh" "$@"
 
 echo "Running build-examples-hpxmp.sh"
 bash "$DIR/build-examples-hpxmp.sh" "$@"
+
+echo "Running build-omp.sh"
+bash "$DIR/build-omp.sh" "$@"
+
+echo "Running build-examples-omp.sh"
+bash "$DIR/build-examples-omp.sh" "$@"
