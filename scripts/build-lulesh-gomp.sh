@@ -10,11 +10,8 @@ PREFIX="$CURRENT_DIR"/..
 DEPENDENCIES="${PREFIX}/dependencies"
 
 # Clone lulesh
-LULESH_DIR=${PREFIX}/LULESH
-# git clone -b build-with-omp git@github.com:Pansysk75/LULESH.git ${LULESH_DIR}
-
-export OMP_LIB_PATH="${DEPENDENCIES}/llvm-project/openmp/cmake-install-omp/${BUILD_TYPE}/lib"
-export OMP_INCLUDE_PATH="${DEPENDENCIES}/llvm-project/openmp/cmake-install-omp/${BUILD_TYPE}/include"
+LULESH_DIR=${PREFIX}/LULESH_GOMP
+git clone -b build-with-omp git@github.com:Pansysk75/LULESH.git ${LULESH_DIR}
 
 # Build lulesh
 cd ${LULESH_DIR}
