@@ -48,7 +48,10 @@ cmake                                   \
 -D "HPX_DIR=${HPX_DIR}"                 \
 -D "CMAKE_BUILD_TYPE=${BUILD_TYPE}"     \
 -D "CMAKE_INSTALL_PREFIX=${INSTALL_DIR}" \
--D "CMAKE_POSITION_INDEPENDENT_CODE=ON"
+-D "CMAKE_POSITION_INDEPENDENT_CODE=ON"   \
+-D "CMAKE_VERBOSE_MAKEFILE:BOOL=ON"     \
+-D "HPXC_WITH_DYNAMIC_HPXC_MAIN=ON" \
+-D "HPXC_WITH_SHARED_LIBS=ON"
 
 # Build and install
 cmake --build ${BUILD_DIR}
