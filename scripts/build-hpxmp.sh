@@ -17,7 +17,7 @@ else
   LIB64_OR_LIB="lib"
 fi
 HPX_DIR=${DEPENDENCIES}/hpx/cmake-install/${BUILD_TYPE}/${LIB64_OR_LIB}/cmake/HPX
-HPXC_DIR=${DEPENDENCIES}/hpxc
+HPXC_DIR=${DEPENDENCIES}/hpxc/cmake-install/${BUILD_TYPE}
 
 LLVM_DIR=${DEPENDENCIES}/llvm-project
 LLVM_VERSION=16.0.6
