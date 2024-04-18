@@ -3,24 +3,28 @@
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-// Demonstrating #23: double free or corruption (fasttop)
+// Demonstrating #23: HPXMP hangs when creating more than one tasks under parent task
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifdef HPXMP
+#include <hpxc/util/wrap_main.h>
+#endif // HPXMP
 
 int main(int argc, char **argv)
 {
 #pragma omp parallel num_threads(1)
     {
-#pragma omp task untied
+#pragma omp task
         {
-#pragma omp task untied
+#pragma omp task
             {
-                printf("this is untiedtask 1\n");
+                printf("this is task 1\n");
             }
-#pragma omp task untied
+#pragma omp task
             {
-                printf("this is untied task 2\n");
+                printf("this is task 2\n");
             }
         }
     }

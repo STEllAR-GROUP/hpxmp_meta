@@ -6,10 +6,9 @@
 #include <iostream>
 #include <vector>
 
-#ifdef HPXC
-#include <hpx/hpx_main.hpp>
-// #include <hpxc/util/wrap_main.hpp>
-#endif // HPXC
+#ifdef HPXMP
+#include <hpxc/util/wrap_main.h>
+#endif // HPXMP
 
 int main(int argc, char **argv)
 {

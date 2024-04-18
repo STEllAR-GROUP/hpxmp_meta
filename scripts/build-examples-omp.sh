@@ -38,5 +38,5 @@ cmake \
   -Wdev -S "${SOURCE_PATH}" -B "${BUILD_PATH}"
 
 # Build and install
-cmake --build "${BUILD_PATH}" --target tests
+cmake --build "${BUILD_PATH}" --target examples tests
 cmake --install "${BUILD_PATH}"

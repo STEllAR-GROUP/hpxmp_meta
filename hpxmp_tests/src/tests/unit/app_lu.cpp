@@ -39,10 +39,9 @@
 #include <math.h>
 #include <sys/time.h>
 
-#ifdef HPXC
-#include <hpx/hpx_main.hpp>
-// #include <hpxc/util/wrap_main.hpp>
-#endif // HPXC
+#ifdef HPXMP
+#include <hpxc/util/wrap_main.h>
+#endif // HPXMP
 
 //#define DEBUG 1
 #define CHECK 1

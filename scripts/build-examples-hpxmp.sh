@@ -23,8 +23,8 @@ else
   LIB64_OR_LIB="lib"
 fi
 HPX_DIR=${DEPENDENCIES}/hpx/cmake-install/${BUILD_TYPE}/${LIB64_OR_LIB}/cmake/HPX
-HPXC_INCLUDE_PATH="${DEPENDENCIES}/hpxc/cmake-install/${BUILD_TYPE}/include"
-OMP_LIB_PATH="${DEPENDENCIES}/llvm-project/openmp/cmake-install-hpxmp/${BUILD_TYPE}/lib"
+HPXC_INSTALL_PATH="${DEPENDENCIES}/hpxc/cmake-install/${BUILD_TYPE}"
+OMP_INSTALL_PATH="${DEPENDENCIES}/llvm-project/openmp/cmake-install-hpxmp/${BUILD_TYPE}"
 
 SOURCE_PATH="${PREFIX}/hpxmp_tests/src"
 BUILD_PATH="${PREFIX}/hpxmp_tests/build_${BUILD_TYPE}_hpxmp"
@@ -51,11 +51,12 @@ cmake \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
   -DHPX_DIR="${HPX_DIR}" \
   -DCMAKE_CXX_STANDARD=17 \
-  -DWITH_HPXC=ON \
-  -DHPXC_INCLUDE_PATH="${HPXC_INCLUDE_PATH}" \
-  -DOMP_LIB_PATH="${OMP_LIB_PATH}" \
+  -DWITH_HPXMP=ON \
+  -DHPXMP_DIR="${OMP_INSTALL_PATH}" \
+  -DHPXC_DIR="${HPXC_INSTALL_PATH}" \
   -Wdev -S "${SOURCE_PATH}" -B "${BUILD_PATH}"
 
+  # -DOMP_LIB_PATH="${OMP_INSTALL_PATH}" \
 # Build and install
-cmake --build "${BUILD_PATH}" --target tests
+cmake --build "${BUILD_PATH}" --target examples tests
 cmake --install "${BUILD_PATH}"

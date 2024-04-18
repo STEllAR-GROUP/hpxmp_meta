@@ -1,9 +1,34 @@
+# Copyright (c) 2024 Panos Syskakis
 # Copyright (c) 2018 Tianyi Zhang
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
+add_custom_target(tests.unit)
+add_dependencies(tests tests.unit)
+
+function(add_hpxmp_test name)
+    set(sources ${name}.cpp)
+    set(target tests.unit.${name})
+
+    add_executable(${target} ${sources})
+    set(test_properties TIMEOUT 50)
+    if(WITH_HPXMP)
+        target_link_libraries(${target} hpxc-wrap hpxc hpxmp)
+        get_target_property(HPXMP_LIB_PATH hpxmp LIB_PATH)
+        set(test_properties ${test_properties} ENVIRONMENT "LD_LIBRARY_PATH=${HPXMP_LIB_PATH}:$ENV{LD_LIBRARY_PATH} OMP_NUM_THREADS=4")
+    else()
+        target_link_libraries(${target} omp)
+    endif()
+
+    add_test(${target} ${target})
+    set_tests_properties(${target} PROPERTIES ${test_properties})
+
+    add_dependencies(tests.unit ${target})
+endfunction()
+
+    
+
 set(tests
         app_lu
         app_old_fib
@@ -41,52 +66,6 @@ set(tests
         )
 
 
-add_custom_target(tests)
-
-message("Using compiler: " ${CMAKE_CXX_COMPILER_ID})
-
-
 foreach(test ${tests})
-
-    set(sources ${test}.cpp)
-    set(target tests.omp.unit.${test})
-
-    add_executable(${target} ${sources})
-
-    if(WITH_HPXC)
-        target_link_libraries(${target} ${HPXMP} pthread HPX::hpx HPX::wrap_main m)
-        target_include_directories(${target} PUBLIC ${HPXC_INCLUDE_PATH})
-    elseif()
-        target_link_libraries(${target} pthread m)
-    endif()
-
-    add_test(${target} ${target})
-    set_tests_properties(${target} PROPERTIES
-            TIMEOUT 50
-            )
-            
-    add_dependencies(tests ${target})
-
-    # if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    #     target_compile_options(${target} PUBLIC -fdump-tree-ompexp)
-    # endif()
-
+    add_hpxmp_test(${test})
 endforeach()
-
-            # ENVIRONMENT "LD_PRELOAD=${PROJECT_BINARY_DIR}/libhpxmp.so;OMP_NUM_THREADS=2"
-
-
-# if(HPXMP_WITH_OMP_50_ENABLED)
-#     set(tests_omp50
-#             task_in_reduction
-#             )
-# endif()
-
-
-# if(HPXMP_WITH_OMP_50_ENABLED)
-#     foreach(test ${tests_omp50})
-#         set(sources ${test}.cpp)
-#         add_executable(tests.omp.unit.${test} ${sources})
-#         do_test(tests.omp.unit.${test})
-#     endforeach()
-# endif()

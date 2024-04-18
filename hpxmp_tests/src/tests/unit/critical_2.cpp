@@ -5,10 +5,9 @@
 
 #include <stdio.h>
 
-#ifdef HPXC
-#include <hpx/hpx_main.hpp>
-// #include <hpxc/util/wrap_main.hpp>
-#endif // HPXC
+#ifdef HPXMP
+#include <hpxc/util/wrap_main.h>
+#endif // HPXMP
 
 int main() {
     int x=0, y=0;

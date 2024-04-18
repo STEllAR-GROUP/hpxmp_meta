@@ -5,10 +5,9 @@
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #include <stdio.h>
 
-#ifdef HPXC
-#include <hpx/hpx_main.hpp>
-// #include <hpxc/util/wrap_main.hpp>
-#endif // HPXC
+#ifdef HPXMP
+#include <hpxc/util/wrap_main.h>
+#endif // HPXMP
 
 const int LOOPCOUNT = 4;
 
