@@ -10,10 +10,9 @@
 #include <sys/time.h>
 #include <omp.h>
 
-#ifdef HPXC
-#include <hpx/hpx_main.hpp>
-// #include <hpxc/util/wrap_main.hpp>
-#endif // HPXC
+#ifdef HPXMP
+#include <hpxc/util/wrap_main.h>
+#endif // HPXMP
 
 long fib1(int k);
 long fib2(int k);

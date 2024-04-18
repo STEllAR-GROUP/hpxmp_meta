@@ -8,10 +8,9 @@
 #include <vector>
 #include <atomic>
 
-#ifdef HPXC
-#include <hpx/hpx_main.hpp>
-// #include <hpxc/util/wrap_main.hpp>
-#endif // HPXC
+#ifdef HPXMP
+#include <hpxc/util/wrap_main.h>
+#endif // HPXMP
 
 //this code is not working with release under both openmp and hpxmp
 int main(int argc, char *argv[]) {

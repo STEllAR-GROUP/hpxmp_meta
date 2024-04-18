@@ -8,10 +8,9 @@
 #include <vector>
 #include <atomic>
 
-#ifdef HPXC
-#include <hpx/hpx_main.hpp>
-// #include <hpxc/util/wrap_main.hpp>
-#endif // HPXC
+#ifdef HPXMP
+#include <hpxc/util/wrap_main.h>
+#endif // HPXMP
 
 //without taskwait will print A is fun to watch race car
 //with taskwait will print A race car is fun to watch

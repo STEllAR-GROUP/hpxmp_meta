@@ -7,10 +7,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef HPXC
-#include <hpx/hpx_main.hpp>
-// #include <hpxc/util/wrap_main.hpp>
-#endif // HPXC
+#ifdef HPXMP
+#include <hpxc/util/wrap_main.h>
+#endif // HPXMP
 
 int spawn_children(int depth, int num_children)
 {

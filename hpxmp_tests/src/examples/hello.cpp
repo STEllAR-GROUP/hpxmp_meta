@@ -1,3 +1,4 @@
+// Copyright (c) 2024 Panos Syskakis
 // Copyright (c) 2023 R. Tohid (@rtohid)
 //
 // SPDX-License-Identifier: BSL-1.0
@@ -7,9 +8,9 @@
 #include <iostream>
 #include <omp.h>
 
-#ifdef HPXC
-#include <hpx/hpx_main.hpp>
-#endif // HPXC
+#ifdef HPXMP
+#include <hpxc/util/wrap_main.h>
+#endif // HPXMP
 
 int main(int argc, char *argv[])
 {
