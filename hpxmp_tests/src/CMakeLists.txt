@@ -33,7 +33,7 @@ if(WITH_HPXMP)
     NO_DEFAULT_PATH
   )
 
-  # Store hpxmp library directory.
+  # Store hpxmp library directory:
   # When linking with `hpxmp` target, CMake adds the directory of the corresponding libraries to RUNPATH.
   # However, LD_LIBRARY_PATH takes precedence over RUNPATH, which may cause the system OpenMP to be loaded instead of HPXMP.
   # So we manually need to either set LD_LIBRARY_PATH, use LD_PRELOAD, or use rpath.
@@ -83,7 +83,8 @@ else()
   if(OMP_DIR)
     message(STATUS "Using OpenMP from ${OMP_DIR}")
     find_library(omp-lib omp
-      PATHS ${OMP_DIR}/lib
+      PATHS ${OMP_DIR}
+      PATH_SUFFIXES lib lib64
       REQUIRED
       NO_DEFAULT_PATH
     )

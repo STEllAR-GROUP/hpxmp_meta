@@ -8,7 +8,7 @@ COMPILER=${4:-llvm}
 PREFIX="$CURRENT_DIR"/..
 DEPENDENCIES="${PREFIX}/dependencies"
 
-OMP_LIB_PATH="${DEPENDENCIES}/llvm-project/openmp/cmake-install-omp/${BUILD_TYPE}/lib"
+OMP_INSTALL_PATH="${DEPENDENCIES}/llvm-project/openmp/cmake-install-omp/${BUILD_TYPE}"
 
 SOURCE_PATH="${PREFIX}/hpxmp_tests/src"
 BUILD_PATH="${PREFIX}/hpxmp_tests/build_${BUILD_TYPE}_omp"
@@ -34,7 +34,7 @@ cmake \
   -DCMAKE_VERBOSE_MAKEFILE=ON \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
   -DCMAKE_CXX_STANDARD=17 \
-  -DOMP_LIB_PATH="${OMP_LIB_PATH}" \
+  -DOMP_DIR="${OMP_INSTALL_PATH}" \
   -Wdev -S "${SOURCE_PATH}" -B "${BUILD_PATH}"
 
 # Build and install

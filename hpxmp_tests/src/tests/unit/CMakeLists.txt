@@ -13,10 +13,12 @@ function(add_hpxmp_test name)
 
     add_executable(${target} ${sources})
     set(test_properties TIMEOUT 50)
+    set(test_properties ${test_properties} ENVIRONMENT "OMP_NUM_THREADS=4")
+    
     if(WITH_HPXMP)
         target_link_libraries(${target} hpxc-wrap hpxc hpxmp)
         get_target_property(HPXMP_LIB_PATH hpxmp LIB_PATH)
-        set(test_properties ${test_properties} ENVIRONMENT "LD_LIBRARY_PATH=${HPXMP_LIB_PATH}:$ENV{LD_LIBRARY_PATH} OMP_NUM_THREADS=4")
+        set(test_properties ${test_properties} ENVIRONMENT "LD_LIBRARY_PATH=${HPXMP_LIB_PATH}:$ENV{LD_LIBRARY_PATH}")
     else()
         target_link_libraries(${target} omp)
     endif()
