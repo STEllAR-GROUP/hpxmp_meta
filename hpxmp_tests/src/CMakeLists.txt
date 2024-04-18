@@ -44,6 +44,11 @@ if(WITH_HPXMP)
   target_link_libraries(hpxmp INTERFACE ${hpxmp-lib})
   target_compile_definitions(hpxmp INTERFACE -DHPXMP)
   target_compile_options(hpxmp INTERFACE -fopenmp)
+  # Clang supports disabling TLS, which makes omp threadprivates work on HPXMP. 
+  # On other compilers, omp threadprivate will not work properly.
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    target_compile_options(hpxmp INTERFACE -fnoopenmp-use-tls)
+  endif()
 
   # Create hpxc target
   add_library(hpxc INTERFACE)
