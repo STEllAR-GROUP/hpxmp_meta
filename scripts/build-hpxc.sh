@@ -4,36 +4,23 @@
 BUILD_TYPE=${1:-RelWithDebInfo}
 CLEAN_BUILD=${2:-no}
 CURRENT_DIR="${3:-$(realpath "$(dirname "$0")")}"
-COMPILER=${4:-llvm}
 
 # Paths setup
 PREFIX="${CURRENT_DIR}"/..
 DEPENDENCIES="${PREFIX}"/dependencies
 
-# The value depends on the operating system
-if [ -d "${DEPENDENCIES}/hpx/cmake-install/${BUILD_TYPE}/lib64" ]; then
-  LIB64_OR_LIB="lib64"
-else
-  LIB64_OR_LIB="lib"
-fi
-HPX_DIR=${DEPENDENCIES}/hpx/cmake-install/${BUILD_TYPE}/${LIB64_OR_LIB}/cmake/HPX
+
+HPX_ROOT=${DEPENDENCIES}/hpx/cmake-install/${BUILD_TYPE}
 
 SRC_DIR=${DEPENDENCIES}/hpxc
 BUILD_DIR=${SRC_DIR}/cmake-build/${BUILD_TYPE}
 INSTALL_DIR=${SRC_DIR}/cmake-install/${BUILD_TYPE}
-
-
-# Load modules based on the chosen compiler
-module load $COMPILER boost cmake
 
 # Clean build and install directories if CLEAN_BUILD == 'yes'
 if [ "$CLEAN_BUILD" = "yes" ]; then
   echo "Cleaning build and install directories..."
   rm -rf "${BUILD_DIR}" "${INSTALL_DIR}"
 fi
-
-# Error checks
-set -e
 
 # Clone if the directory doesn't exist
 if [ ! -d ${SRC_DIR} ]; then
@@ -45,14 +32,12 @@ cmake                                   \
 -G Ninja                                \
 -S ${SRC_DIR}                           \
 -B ${BUILD_DIR}                         \
--D "HPX_DIR=${HPX_DIR}"                 \
+-D "HPX_ROOT=${HPX_ROOT}"               \
 -D "CMAKE_BUILD_TYPE=${BUILD_TYPE}"     \
--D "CMAKE_INSTALL_PREFIX=${INSTALL_DIR}" \
 -D "CMAKE_POSITION_INDEPENDENT_CODE=ON"   \
--D "CMAKE_VERBOSE_MAKEFILE:BOOL=ON"     \
 -D "HPXC_WITH_DYNAMIC_HPXC_MAIN=ON" \
 -D "HPXC_WITH_SHARED_LIBS=ON"
 
 # Build and install
 cmake --build ${BUILD_DIR}
-cmake --install ${BUILD_DIR}
+cmake --install ${BUILD_DIR} --prefix ${INSTALL_DIR}
