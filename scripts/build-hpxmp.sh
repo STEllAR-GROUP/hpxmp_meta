@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Copyright (c) 2024 Panos Syskakis
+# Copyright (c) 2023 R. Tohid (@rtohid)
+#
+# SPDX-License-Identifier: BSL-1.0
+# Distributed under the Boost Software License, Version 1.0. (See accompanying
+# file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+
 # Input arguments with default values
 BUILD_TYPE=${1:-RelWithDebInfo}
 CLEAN_BUILD=${2:-no}
@@ -19,7 +26,6 @@ OMP_DIR=${LLVM_DIR}/openmp
 BUILD_DIR=${OMP_DIR}/cmake-build-hpxmp/${BUILD_TYPE}
 INSTALL_DIR=${OMP_DIR}/cmake-install-hpxmp/${BUILD_TYPE}
 
-
 # Clean build and install directories if CLEAN_BUILD == 'yes'
 if [ "$CLEAN_BUILD" = "yes" ]; then
   echo "Cleaning build and install directories..."
@@ -32,25 +38,22 @@ if [ ! -d ${LLVM_DIR} ]; then
 fi
 
 # Running CMake commands
-cmake                                \
-  -G Ninja                           \
+cmake \
+  -G Ninja \
+  -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} \
   -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-  -DCMAKE_BUILD_TYPE=${BUILD_TYPE}   \
-  -DOPENMP_ENABLE_LIBOMPTARGET=OFF   \
-  -DLIBOMP_OMPD_SUPPORT=OFF          \
-  -DLIBOMP_USE_ITT_NOTIFY=OFF        \
-  -DWITH_HPXC=ON                     \
-  -DHPXC_ROOT=${HPXC_ROOT}           \
-  -DHPX_ROOT=${HPX_ROOT}             \
+  -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
+  -DOPENMP_ENABLE_LIBOMPTARGET=OFF \
+  -DLIBOMP_OMPD_SUPPORT=OFF \
+  -DLIBOMP_USE_ITT_NOTIFY=OFF \
+  -DWITH_HPXC=ON \
+  -DHPXC_ROOT=${HPXC_ROOT} \
+  -DHPX_ROOT=${HPX_ROOT} \
   -Wdev -S ${OMP_DIR} -B ${BUILD_DIR}
 
-  # -DWITH_FETCH_HPXC=ON               \
-  # -DHPXC_WITH_FETCH_HPX=ON           \
-  # -DHPX_WITH_FETCH_ASIO=ON           \
-  # -DHPX_WITH_EXAMPLES=OFF            \
-
-  # -DFETCHCONTENT_SOURCE_DIR_HPXC=${HPXC_ROOT} \
+# -DWITH_FETCH_HPXC=ON               \
+# -DHPXC_WITH_FETCH_HPX=ON           \
 
 # Build and install
 cmake --build ${BUILD_DIR}
-cmake --install ${BUILD_DIR} --prefix ${INSTALL_DIR}
+cmake --install ${BUILD_DIR}

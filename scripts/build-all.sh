@@ -1,6 +1,8 @@
 #!/bin/bash
 
-set -e  # Exit immediately if a command exits with a non-zero status
+# Usage: ./build-all.sh [(Build mode?)Debug|RelWithDebInfo|Release] [(Clean build?)yes|no]
+
+set -e # Exit immediately if a command exits with a non-zero status
 
 # validate parameters
 if [ "$1" != "Debug" ] && [ "$1" != "RelWithDebInfo" ] && [ "$1" != "Release" ]; then

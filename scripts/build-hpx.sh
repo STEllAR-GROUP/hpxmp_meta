@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Copyright (c) 2024 Panos Syskakis
+# Copyright (c) 2023 R. Tohid (@rtohid)
+#
+# SPDX-License-Identifier: BSL-1.0
+# Distributed under the Boost Software License, Version 1.0. (See accompanying
+# file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+
 # Input arguments with default values
 BUILD_TYPE=${1:-RelWithDebInfo}
 CLEAN_BUILD=${2:-no}
@@ -25,16 +32,16 @@ if [ ! -d ${SRC_DIR} ]; then
 fi
 
 # Running CMake commands
-cmake                                     \
--G Ninja                                  \
--S ${SRC_DIR}                             \
--B ${BUILD_DIR}                           \
--D "HPX_WITH_FETCH_ASIO=ON"               \
--D "CMAKE_BUILD_TYPE=${BUILD_TYPE}"       \
--D "HPX_WITH_DYNAMIC_HPX_MAIN=OFF"        \
--D "HPX_WITH_EXAMPLES=OFF"                \
--D "HPX_WITH_TESTS=OFF"                   \
--D "HPX_WITH_FETCH_BOOST=ON"              
+cmake \
+  -G Ninja \
+  -S ${SRC_DIR} \
+  -B ${BUILD_DIR} \
+  -D "HPX_WITH_FETCH_ASIO=ON" \
+  -D "CMAKE_BUILD_TYPE=${BUILD_TYPE}" \
+  -D "HPX_WITH_DYNAMIC_HPX_MAIN=OFF" \
+  -D "HPX_WITH_EXAMPLES=OFF" \
+  -D "HPX_WITH_TESTS=OFF" \
+  -D "HPX_WITH_FETCH_BOOST=ON"
 
 # Build and install
 cmake --build ${BUILD_DIR}
