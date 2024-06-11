@@ -12,19 +12,23 @@ function(add_hpxmp_test name)
     set(target tests.unit.${name})
 
     add_executable(${target} ${sources})
-    set(test_properties TIMEOUT 50)
-    set(test_properties ${test_properties} ENVIRONMENT "OMP_NUM_THREADS=4")
-    
+
+    set(test_env_vars "OMP_NUM_THREADS=4")
     if(WITH_HPXMP)
-        target_link_libraries(${target} hpxc-wrap hpxc hpxmp)
-        get_target_property(HPXMP_LIB_PATH hpxmp LIB_PATH)
-        set(test_properties ${test_properties} ENVIRONMENT "LD_LIBRARY_PATH=${HPXMP_LIB_PATH}:$ENV{LD_LIBRARY_PATH}")
+        target_link_libraries(${target} HPXMP::hpxmp)
+        # Prepend HPXMP library path to LD_LIBRARY_PATH, to ensure that the linker
+        # doesn't pick up some other OpenMP library in the system.
+        get_target_property(HPXMP_LIB_PATH HPXMP::hpxmp LIB_PATH)
+        set(test_env_vars ${test_env_vars} "LD_LIBRARY_PATH=${HPXMP_LIB_PATH}:$ENV{LD_LIBRARY_PATH}")
     else()
-        target_link_libraries(${target} omp)
+        target_link_libraries(${target} OpenMP::OpenMP_CXX)
     endif()
 
-    add_test(${target} ${target})
-    set_tests_properties(${target} PROPERTIES ${test_properties})
+    # Custom command to also print the result of ldd
+    # add_test(${target} ${target})
+    add_test(NAME ${target} COMMAND objdump -p ${target})
+
+    set_tests_properties(${target} PROPERTIES TIMEOUT 50 ENVIRONMENT "${test_env_vars}")
 
     add_dependencies(tests.unit ${target})
 endfunction()

@@ -6,10 +6,6 @@
 
 #include <stdio.h>
 
-#ifdef HPXMP
-#include <hpxc/util/wrap_main.h>
-#endif // HPXMP
-
 int main()
 {
     int x = 10, i = 0;

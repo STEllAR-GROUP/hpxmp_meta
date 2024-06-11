@@ -8,10 +8,6 @@
 #include <stdio.h>
 #include <math.h>
 
-#ifdef HPXMP
-#include <hpxc/util/wrap_main.h>
-#endif // HPXMP
-
 int main()
 {
     int i, num_steps = 15000, x, sum = 0, pi;

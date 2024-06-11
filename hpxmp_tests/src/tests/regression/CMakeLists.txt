@@ -16,11 +16,13 @@ function(add_hpxmp_regression_test name)
         set(test_properties ${test_properties} ENVIRONMENT "OMP_NUM_THREADS=4")
 
         if(WITH_HPXMP)
-                target_link_libraries(${target} hpxc-wrap hpxc hpxmp)
-                get_target_property(HPXMP_LIB_PATH hpxmp LIB_PATH)
+                target_link_libraries(${target} HPXMP::hpxmp)
+                # Prepend HPXMP library path to LD_LIBRARY_PATH, to ensure that the linker
+                # doesn't pick up some other OpenMP library in the system.
+                get_target_property(HPXMP_LIB_PATH HPXMP::hpxmp LIB_PATH)
                 set(test_properties ${test_properties} ENVIRONMENT "LD_LIBRARY_PATH=${HPXMP_LIB_PATH}:$ENV{LD_LIBRARY_PATH}")
         else()
-                target_link_libraries(${target} omp)
+                target_link_libraries(${target} OpenMP::OpenMP_CXX)
         endif()
 
         add_test(${target} ${target})

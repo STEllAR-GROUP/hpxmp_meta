@@ -9,10 +9,6 @@
 #define print_line printf("Line: %d\n", __LINE__)
 #define print_line_thread printf("Line: %d, Thread: %d\n", __LINE__, omp_get_thread_num())
 
-#ifdef HPXMP
-#include <hpxc/util/wrap_main.h>
-#endif // HPXMP
-
 int x = 0, y = 0, Global = 0;
 #pragma omp threadprivate(x, y)
 float get_int() {

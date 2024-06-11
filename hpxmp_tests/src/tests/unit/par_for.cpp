@@ -6,10 +6,6 @@
 #include <iostream>
 #include <omp.h>
 
-#ifdef HPXMP
-#include <hpxc/util/wrap_main.h>
-#endif // HPXMP
-
 int main()
 {
     int result[10];

@@ -7,10 +7,6 @@
 #include <omp.h>
 #include <vector>
 
-#ifdef HPXMP
-#include <hpxc/util/wrap_main.h>
-#endif // HPXMP
-
 bool inRange(int low, int high, int x)
 {
     return (low <= x && x <= high);

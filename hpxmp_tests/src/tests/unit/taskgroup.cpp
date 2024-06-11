@@ -8,10 +8,6 @@
 #include <vector>
 #include <atomic>
 
-#ifdef HPXMP
-#include <hpxc/util/wrap_main.h>
-#endif // HPXMP
-
 //this code is not working with release under both openmp and hpxmp
 int main(int argc, char *argv[]) {
     std::vector<int> result(5,0);

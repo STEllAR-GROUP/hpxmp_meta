@@ -39,10 +39,6 @@
 #include <math.h>
 #include <sys/time.h>
 
-#ifdef HPXMP
-#include <hpxc/util/wrap_main.h>
-#endif // HPXMP
-
 //#define DEBUG 1
 #define CHECK 1
 #define MEASURE 1

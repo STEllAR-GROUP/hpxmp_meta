@@ -7,10 +7,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef HPXMP
-#include <hpxc/util/wrap_main.h>
-#endif // HPXMP
-
 int spawn_children(int depth, int num_children)
 {
     int partial_sum[num_children];

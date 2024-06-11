@@ -7,10 +7,6 @@
 #include <omp.h>
 #include <vector>
 
-#ifdef HPXMP
-#include <hpxc/util/wrap_main.h>
-#endif // HPXMP
-
 int main()
 {
     int master_thread_num;

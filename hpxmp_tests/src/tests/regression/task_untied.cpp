@@ -8,10 +8,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef HPXMP
-#include <hpxc/util/wrap_main.h>
-#endif // HPXMP
-
 int main(int argc, char **argv)
 {
 #pragma omp parallel num_threads(1)

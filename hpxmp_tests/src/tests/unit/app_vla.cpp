@@ -5,10 +5,6 @@
 
 #include <stdio.h>
 
-#ifdef HPXMP
-#include <hpxc/util/wrap_main.h>
-#endif // HPXMP
-
 int arr_add(int size)
 {
     int n[size];

@@ -8,10 +8,6 @@
 #include <stdio.h>
 #include <omp.h>
 
-#ifdef HPXMP
-#include <hpxc/util/wrap_main.h>
-#endif // HPXMP
-
 int main(){
     for(int i =1; i < 20; i++){
         omp_set_num_threads(i);

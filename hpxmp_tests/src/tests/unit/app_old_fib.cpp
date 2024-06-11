@@ -6,10 +6,6 @@
 
 #include <stdio.h>
 
-#ifdef HPXMP
-#include <hpxc/util/wrap_main.h>
-#endif // HPXMP
-
 int fib(int n)
 {
     int f1, f2, f;

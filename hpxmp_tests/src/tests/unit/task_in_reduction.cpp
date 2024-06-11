@@ -6,10 +6,6 @@
 #include <iostream>
 #include <vector>
 
-#ifdef HPXMP
-#include <hpxc/util/wrap_main.h>
-#endif // HPXMP
-
 int main(int argc, char **argv)
 {
     int sum = 0;

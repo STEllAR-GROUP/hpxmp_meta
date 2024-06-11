@@ -7,10 +7,6 @@
 #include <stdio.h>
 #include <omp.h>
 
-#ifdef HPXMP
-#include <hpxc/util/wrap_main.h>
-#endif // HPXMP
-
 using namespace std;
 
 int main()

@@ -8,10 +8,6 @@
 #include <vector>
 #include <atomic>
 
-#ifdef HPXMP
-#include <hpxc/util/wrap_main.h>
-#endif // HPXMP
-
 //without taskwait will print A is fun to watch race car
 //with taskwait will print A race car is fun to watch
 int main(int argc, char *argv[]) {

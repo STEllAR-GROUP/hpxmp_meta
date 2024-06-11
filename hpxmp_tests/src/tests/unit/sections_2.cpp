@@ -8,10 +8,6 @@
 #include <omp.h>
 #include <atomic>
 
-#ifdef HPXMP
-#include <hpxc/util/wrap_main.h>
-#endif // HPXMP
-
 int main()
 {
     std::atomic<int> position(-1);
